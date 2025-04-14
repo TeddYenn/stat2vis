@@ -282,5 +282,5 @@ if df is not None:
 
 # Footer
 st.markdown("---")
-st.write("stat2vis: Collection of Applications for Visualizing Statistical Concepts")
+st.write("stat2vis: Collection of Applications for Visualizing Statistics")
 st.write("GitHub: https://github.com/TeddYenn/stat2vis")

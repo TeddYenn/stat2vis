@@ -6,14 +6,14 @@ st.set_page_config(
     layout="wide", 
     initial_sidebar_state = "auto",
     menu_items={
-        'About': "This work created by Teddy (Yen-Hsiang Huang) from the NCHU, Taiwan.",
+        'About': "This work created by Teddy (Yen-Hsiang Huang; 黃彥翔) from the NCHU, Taiwan.",
         'Get Help': 'https://github.com/TeddYenn/stat2vis',
         'Report a bug': "https://github.com/TeddYenn/stat2vis/issues"
     })
 
 # App Info.
 st.title("stat2vis; Visualizing Statistics!")
-st.caption("**統計分析視覺化; Developed by Teddy (Yen-Hsiang Huang)**")
+st.caption("**統計分析視覺化; Developed by Teddy (Yen-Hsiang Huang; 黃彥翔)**")
 
 # Functionalities
 st.write("")
@@ -32,8 +32,9 @@ st.subheader("Updates")
 st.write("2025/03/17: Start creating app.")
 st.write("2025/03/18: Finish EDA I.")
 st.write("2025/03/25: Finish EDA II.")
+st.write("2025/04/13: Finish Dist.")
 
 # Footer
 st.markdown("---")
-st.write("stat2vis: Collection of Applications for Visualizing Statistical Concepts")
+st.write("stat2vis: Collection of Applications for Visualizing Statistics")
 st.write("GitHub: https://github.com/TeddYenn/stat2vis")

@@ -3,3 +3,5 @@ streamlit run 0_Home.py
 streamlit run 1_EDA1.py
 
 streamlit run 2_EDA2.py
+
+streamlit run 3_Dist.py
