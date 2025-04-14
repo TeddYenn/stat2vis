@@ -1,8 +1,6 @@
 streamlit
 pandas
-plotly.express
-plotly.figure_factory
-plotly.graph_objects
+plotly
 numpy
-matplotlib.pyplot
-scipy.stats
+matplotlib
+scipy
