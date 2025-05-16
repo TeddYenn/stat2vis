@@ -29,10 +29,10 @@ st.write("")
 # Log Updates
 st.subheader("Updates")
 
-st.write("2025/03/17: Start creating app.")
-st.write("2025/03/18: Finish EDA I.")
-st.write("2025/03/25: Finish EDA II.")
-st.write("2025/04/13: Finish Dist.")
+# st.write("2025/03/17: Start creating app.")
+# st.write("2025/03/18: Finish EDA I.")
+# st.write("2025/03/25: Finish EDA II.")
+# st.write("2025/04/13: Finish Dist.")
 
 # Footer
 st.markdown("---")

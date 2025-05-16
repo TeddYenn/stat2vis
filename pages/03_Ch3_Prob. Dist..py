@@ -84,15 +84,19 @@ if dist_type == "Normal Distribution (常態分布)":
     # --- User input for parameters ---
     col1, col2 = st.columns(2)
     with col1:
-        mean = st.slider("Mean (μ)", -100.0, 100.0, 10.0, 10.0)
+        mean = st.slider("Mean (μ)", -20.0, 20.0, 0.0, 1.0)
         std = st.slider("Standard Deviation（σ）", 0.1, 10.0, 1.0, 0.1)
+        fix_xlim = st.checkbox("Fix X-axis to [-30, 30]", value=False)
 
     # --- PDF calculation and plotting values ---
-    x = np.linspace(mean - 4*std, mean + 4*std, 500)
+    if fix_xlim:
+        x = np.linspace(-30, 30, 500)
+    else:
+        x = np.linspace(mean - 4*std, mean + 4*std, 500)
     y = norm.pdf(x, mean, std)
 
     # --- Simulate data points (samples) for visualization ---
-    data_points = np.random.normal(loc=mean, scale=std, size=300)
+    data_points = np.random.normal(loc=mean, scale=std, size=100)
     data_y = norm.pdf(data_points, mean, std)
 
     # --- Plotting PDF and elements ---
@@ -116,6 +120,9 @@ if dist_type == "Normal Distribution (常態分布)":
     ax.set_title("Normal Distribution")
     ax.legend(fontsize="small")
     st.pyplot(fig, use_container_width=False)
+
+    if fix_xlim:
+        ax.set_xlim(-50, 50)
 
 # ==========================================
 # Uniform Distribution
@@ -398,15 +405,16 @@ elif dist_type == "Chi-square Distribution (卡方分布)":
     ax.legend(fontsize="small")
     st.pyplot(fig, use_container_width=False)
 
-# --- Student's t-distribution ---
+# ==========================================
+# Student's t-distribution
+# ==========================================
 
 elif dist_type == "Student's t-distribution (t 分布)":
     st.subheader("📈 Student's t-distribution | t 分布")
 
     # --- Description and formula ---
     st.markdown("""
-                The Student’s t-distribution is a symmetric, bell-shaped distribution like the normal distribution, but with heavier tails.  
-                It is commonly used in statistical inference, especially for small sample sizes.
+                The Student’s t-distribution is a symmetric, bell-shaped distribution like the normal distribution, but with heavier tails. It is commonly used in statistical inference, especially for small sample sizes.
                 """)
     
     st.latex(r'''
@@ -441,7 +449,7 @@ elif dist_type == "Student's t-distribution (t 分布)":
     # --- User input for degrees of freedom ---
     col1, col2 = st.columns(2)
     with col1:
-        df = st.slider("Degrees of Freedom (ν)", 1, 50, 5, 1)
+        df = st.slider("Degrees of Freedom (ν)", 1, 100, 5, 1)
 
     # --- PDF calculation ---
     from scipy.stats import t
@@ -476,7 +484,9 @@ elif dist_type == "Student's t-distribution (t 分布)":
     ax.legend(fontsize="small")
     st.pyplot(fig, use_container_width=False)
 
-# --- F-distribution ---
+# ==========================================
+# F-distribution
+# ==========================================
 
 elif dist_type == "F Distribution (F 分布)":
     st.subheader("📈 F-distribution | F 分布")
@@ -561,7 +571,9 @@ elif dist_type == "F Distribution (F 分布)":
     ax.legend(fontsize="small")
     st.pyplot(fig, use_container_width=False)
 
-# --- Beta Distribution ---
+# ==========================================
+# Beta Distribution
+# ==========================================
 
 elif dist_type == "Beta Distribution (Beta 分布)":
     st.subheader("📈 Beta Distribution | Beta 分布")
@@ -632,6 +644,439 @@ elif dist_type == "Beta Distribution (Beta 分布)":
     ax.set_title("Beta Distribution")
     ax.legend(fontsize="small")
     st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Binomial Distribution
+# ==========================================
+
+elif dist_type == "Binomial Distribution (二項分布)":
+    st.subheader("📊 Binomial Distribution | 二項分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Binomial distribution is a discrete probability distribution that describes the number of successes in a fixed number of independent trials, each with the same probability of success.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}, \quad k = 0, 1, \dots, n
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X$: number of successes  
+    - $n$: number of trials  
+    - $p$: probability of success  
+    - $k$: number of successful outcomes  
+    """)
+
+    # --- Mean and Standard Deviation ---
+    st.markdown("The mean and standard deviation are:")
+    st.latex(r'''
+    \mu = np, \quad \sigma = \sqrt{np(1 - p)}
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for number of trials and probability ---
+    col1, col2 = st.columns(2)
+    with col1:
+        n = st.slider("Number of trials (n)", 1, 30, 10, 1)
+        p = st.slider("Probability of success (p)", 0.0, 1.0, 0.5, 0.01)
+
+    # --- PMF calculation ---
+    from scipy.stats import binom
+    x = np.arange(0, n + 1)
+    y = binom.pmf(x, n, p)
+
+    # --- Mean and standard deviation ---
+    mean = n * p
+    std = np.sqrt(n * p * (1 - p))
+    lower = int(max(0, mean - 2 * std))
+    upper = int(min(n, mean + 2 * std))
+
+    # --- Plotting PMF and elements ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    ax.bar(x, y, label="PMF", color="skyblue", edgecolor="black")
+
+    # --- Annotate mean and ~95% area ---
+    ax.axvline(mean, color="red", linestyle="--", label=f"Mean = {mean:.2f}")
+    ax.axvline(lower, color="green", linestyle=":", label=f"μ - 2σ ≈ {lower}")
+    ax.axvline(upper, color="green", linestyle=":", label=f"μ + 2σ ≈ {upper}")
+
+    ax.set_xticks(x)
+    ax.set_xlabel("Number of Successes")
+    ax.set_ylabel("Probability")
+    ax.set_title("Binomial Distribution")
+    ax.legend(fontsize="small")
+    st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Hypergeometric Distribution
+# ==========================================
+
+elif dist_type == "Hypergeometric Distribution (超幾何分布)":
+    st.subheader("📊 Hypergeometric Distribution | 超幾何分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Hypergeometric distribution is a discrete probability distribution that models the number of successes in a sample drawn **without replacement** from a finite population with known numbers of successes and failures.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X = k) = \frac{ \binom{K}{k} \binom{N - K}{n - k} }{ \binom{N}{n} }, 
+    \quad \max(0, n - (N - K)) \leq k \leq \min(n, K)
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X$: number of successes in the sample  
+    - $N$: population size  
+    - $K$: number of successes in the population  
+    - $n$: sample size  
+    - $k$: number of observed successes  
+    """)
+
+    # --- Mean and Standard Deviation ---
+    st.markdown("The mean and standard deviation are:")
+    st.latex(r'''
+    \mu = n \cdot \frac{K}{N}, \quad 
+    \sigma = \sqrt{n \cdot \frac{K}{N} \cdot \frac{N - K}{N} \cdot \frac{N - n}{N - 1}}
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for population parameters ---
+    col1, col2 = st.columns(2)
+    with col1:
+        N = st.slider("Population size (N)", 10, 50, 20, 1)
+        K = st.slider("Number of success items (K)", 1, N, int(N / 2), 1)
+        n = st.slider("Sample size (n)", 1, N, min(10, N), 1)
+
+    # --- PMF calculation ---
+    from scipy.stats import hypergeom
+    x_min = max(0, n - (N - K))
+    x_max = min(n, K)
+    x = np.arange(x_min, x_max + 1)
+    y = hypergeom.pmf(x, N, K, n)
+
+    # --- Mean and standard deviation ---
+    mean = n * (K / N)
+    std = np.sqrt(n * (K / N) * ((N - K) / N) * ((N - n) / (N - 1)))
+    lower = int(max(x_min, mean - 2 * std))
+    upper = int(min(x_max, mean + 2 * std))
+
+    # --- Plotting PMF and elements ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    ax.bar(x, y, label="PMF", color="salmon", edgecolor="black")
+
+    # --- Annotate mean and ~95% area ---
+    ax.axvline(mean, color="red", linestyle="--", label=f"Mean = {mean:.2f}")
+    ax.axvline(lower, color="green", linestyle=":", label=f"μ - 2σ ≈ {lower}")
+    ax.axvline(upper, color="green", linestyle=":", label=f"μ + 2σ ≈ {upper}")
+
+    ax.set_xticks(x)
+    ax.set_xlabel("Number of Successes")
+    ax.set_ylabel("Probability")
+    ax.set_title("Hypergeometric Distribution")
+    ax.legend(fontsize="small")
+    st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Geometric Distribution
+# ==========================================
+
+elif dist_type == "Geometric Distribution (幾何分布)":
+    st.subheader("📊 Geometric Distribution | 幾何分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Geometric distribution is a discrete probability distribution that describes the number of trials needed to get the first success in a sequence of independent Bernoulli trials with constant success probability.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X = k) = (1 - p)^{k - 1} p, \quad k = 1, 2, 3, \dots
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X$: number of trials until the first success  
+    - $p$: probability of success on each trial  
+    - $k$: trial number where the first success occurs  
+    """)
+
+    # --- Mean and Standard Deviation ---
+    st.markdown("The mean and standard deviation are:")
+    st.latex(r'''
+    \mu = \frac{1}{p}, \quad \sigma = \sqrt{\frac{1 - p}{p^2}}
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for probability of success ---
+    col1, _ = st.columns(2)
+    with col1:
+        p = st.slider("Probability of success (p)", 0.01, 1.0, 0.3, 0.01)
+
+    # --- PMF calculation ---
+    from scipy.stats import geom
+    x_max = int(geom.ppf(0.995, p))
+    x = np.arange(1, x_max + 1)
+    y = geom.pmf(x, p)
+
+    # --- Mean and standard deviation ---
+    mean = 1 / p
+    std = np.sqrt((1 - p) / (p ** 2))
+    lower = int(max(1, mean - 2 * std))
+    upper = int(mean + 2 * std)
+
+    # --- Plotting PMF and elements ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    ax.bar(x, y, label="PMF", color="mediumorchid", edgecolor="black")
+
+    # --- Annotate mean and ~95% area ---
+    ax.axvline(mean, color="red", linestyle="--", label=f"Mean ≈ {mean:.2f}")
+    ax.axvline(lower, color="green", linestyle=":", label=f"μ - 2σ ≈ {lower}")
+    ax.axvline(upper, color="green", linestyle=":", label=f"μ + 2σ ≈ {upper}")
+
+    ax.set_xticks(x)
+    ax.set_xlabel("Trial Number Until First Success")
+    ax.set_ylabel("Probability")
+    ax.set_title("Geometric Distribution")
+    ax.legend(fontsize="small")
+    st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Negative Binomial Distribution
+# ==========================================
+
+elif dist_type == "Negative Binomial Distribution (負二項分布)":
+    st.subheader("📊 Negative Binomial Distribution | 負二項分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Negative Binomial distribution is a discrete probability distribution that models the number of failures  
+    before achieving a fixed number of successes in a sequence of independent Bernoulli trials.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X = k) = \binom{k + r - 1}{k} (1 - p)^k p^r, \quad k = 0, 1, 2, \dots
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X$: number of failures before the $r^{th}$ success  
+    - $r$: target number of successes  
+    - $p$: probability of success on each trial  
+    - $k$: number of failures  
+    """)
+
+    # --- Mean and Standard Deviation ---
+    st.markdown("The mean and standard deviation are:")
+    st.latex(r'''
+    \mu = \frac{r(1 - p)}{p}, \quad 
+    \sigma = \sqrt{ \frac{r(1 - p)}{p^2} }
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for r and p ---
+    col1, col2 = st.columns(2)
+    with col1:
+        r = st.slider("Target number of successes (r)", 1, 30, 5, 1)
+        p = st.slider("Probability of success (p)", 0.01, 1.0, 0.4, 0.01)
+
+    # --- PMF calculation ---
+    from scipy.stats import nbinom
+    x_max = int(nbinom.ppf(0.995, r, p))
+    x = np.arange(0, x_max + 1)
+    y = nbinom.pmf(x, r, p)
+
+    # --- Mean and standard deviation ---
+    mean = r * (1 - p) / p
+    std = np.sqrt(r * (1 - p) / p**2)
+    lower = int(max(0, mean - 2 * std))
+    upper = int(mean + 2 * std)
+
+    # --- Plotting PMF and elements ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    ax.bar(x, y, label="PMF", color="coral", edgecolor="black")
+
+    # --- Annotate mean and ~95% area ---
+    ax.axvline(mean, color="red", linestyle="--", label=f"Mean ≈ {mean:.2f}")
+    ax.axvline(lower, color="green", linestyle=":", label=f"μ - 2σ ≈ {lower}")
+    ax.axvline(upper, color="green", linestyle=":", label=f"μ + 2σ ≈ {upper}")
+
+    ax.set_xticks(x)
+    ax.set_xlabel("Number of Failures")
+    ax.set_ylabel("Probability")
+    ax.set_title("Negative Binomial Distribution")
+    ax.legend(fontsize="small")
+    st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Poisson Distribution
+# ==========================================
+
+elif dist_type == "Poisson Distribution (卜瓦松分布)":
+    st.subheader("📊 Poisson Distribution | 卜瓦松分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Poisson distribution is a discrete probability distribution that describes the number of events occurring in a fixed interval of time or space, given a known constant mean rate of occurrence.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}, \quad k = 0, 1, 2, \dots
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X$: number of events  
+    - $\\lambda$: expected number of events in the interval  
+    - $k$: actual number of observed events  
+    """)
+
+    # --- Mean and Standard Deviation ---
+    st.markdown("The mean and standard deviation are:")
+    st.latex(r'''
+    \mu = \lambda, \quad \sigma = \sqrt{\lambda}
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for λ ---
+    col1, _ = st.columns(2)
+    with col1:
+        lam = st.slider("Rate (λ)", 0.5, 50.0, 10.0, 0.5)
+
+    # --- PMF calculation ---
+    from scipy.stats import poisson
+    x_max = int(poisson.ppf(0.995, lam))
+    x = np.arange(0, x_max + 1)
+    y = poisson.pmf(x, lam)
+
+    # --- Mean and standard deviation ---
+    mean = lam
+    std = np.sqrt(lam)
+    lower = int(max(0, mean - 2 * std))
+    upper = int(mean + 2 * std)
+
+    # --- Plotting PMF and elements ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    ax.bar(x, y, label="PMF", color="goldenrod", edgecolor="black")
+
+    # --- Annotate mean and ~95% area ---
+    ax.axvline(mean, color="red", linestyle="--", label=f"Mean = {mean:.2f}")
+    ax.axvline(lower, color="green", linestyle=":", label=f"μ - 2σ ≈ {lower}")
+    ax.axvline(upper, color="green", linestyle=":", label=f"μ + 2σ ≈ {upper}")
+
+    ax.set_xticks(x)
+    ax.set_xlabel("Number of Events")
+    ax.set_ylabel("Probability")
+    ax.set_title("Poisson Distribution")
+    ax.legend(fontsize="small")
+    st.pyplot(fig, use_container_width=False)
+
+# ==========================================
+# Multinomial Distribution
+# ==========================================
+
+elif dist_type == "Multinomial Distribution (多項分布)":
+    st.subheader("📊 Multinomial Distribution | 多項分布")
+
+    # --- Description and formula ---
+    st.markdown("""
+    The Multinomial distribution is a discrete probability distribution that generalizes the Binomial distribution to more than two outcomes. It describes the probabilities of counts for each outcome in a fixed number of trials.
+
+    Its PMF (probability mass function) is given by:
+    """)
+
+    st.latex(r'''
+    P(X_1 = x_1, \dots, X_k = x_k) = 
+    \frac{n!}{x_1! x_2! \dots x_k!} p_1^{x_1} p_2^{x_2} \dots p_k^{x_k}
+    ''')
+
+    # --- Symbol explanation ---
+    st.markdown("""
+    - $X_i$: count in category $i$  
+    - $n$: total number of trials  
+    - $p_i$: probability of outcome $i$, where $\sum p_i = 1$  
+    - $x_i$: number of observations in category $i$, where $\sum x_i = n$  
+    """)
+
+    # --- Mean and Covariance ---
+    st.markdown("The expected count and variance for each category $i$ are:")
+    st.latex(r'''
+    \mu_i = n p_i, \quad 
+    \sigma^2_i = n p_i (1 - p_i), \quad 
+    \text{Cov}(X_i, X_j) = -n p_i p_j \text{ for } i \ne j
+    ''')
+
+    st.markdown("---")
+    st.write("### 2️⃣ Make a Plot  |  作圖")
+
+    # --- User input for number of trials and probabilities ---
+    col1, col2 = st.columns(2)
+    with col1:
+        n = st.slider("Number of trials (n)", 1, 50, 20, 1)
+        k = st.slider("Number of categories (k)", 2, 6, 3, 1)
+
+    st.markdown("Adjust the probability for each category below (they must sum to 1):")
+
+    # --- User inputs for probabilities ---
+    probs = []
+    total = 0
+    for i in range(k - 1):
+        p_i = st.slider(f"p{i+1}", 0.0, 1.0 - total, round(1.0 / k, 2), 0.01)
+        probs.append(p_i)
+        total += p_i
+    probs.append(1.0 - total)
+
+    # --- Sampling from Multinomial ---
+    import numpy as np
+    from scipy.stats import multinomial
+
+    sample_counts = multinomial.rvs(n=n, p=probs, size=1)[0]
+    categories = [f"Cat {i+1}" for i in range(k)]
+
+    # --- Plotting observed counts ---
+    fig, ax = plt.subplots(figsize=(7, 3))
+    bars = ax.bar(categories, sample_counts, color="plum", edgecolor="black")
+
+    for bar, count in zip(bars, sample_counts):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2.0, height + 0.5, str(count), ha='center', va='bottom')
+
+    ax.set_ylim(0, max(sample_counts) + 5)
+    ax.set_xlabel("Categories")
+    ax.set_ylabel("Counts")
+    ax.set_title("Sample from Multinomial Distribution")
+
+    st.pyplot(fig, use_container_width=False)
+
+    # --- Mean and Variance (displayed in markdown) ---
+    means = [n * p for p in probs]
+    st.markdown("#### 📌 Expected Values")
+    for i, m in enumerate(means):
+        st.markdown(f"- $\\mu_{{{i+1}}} = {m:.2f}$")
+    
+
+
 
 # Footer
 st.markdown("---")

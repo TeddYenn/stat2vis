@@ -67,7 +67,7 @@ if st.session_state.upload_data:
 
 # Load demo or uploaded data
 if st.session_state.use_demo_data:
-    df = pd.read_excel('eda_demo.xlsx', sheet_name=0)
+    df = pd.read_csv('demo_data.csv')
 elif uploaded_file is not None:
     if uploaded_file.type == 'text/csv':
         df = pd.read_csv(uploaded_file)
@@ -181,7 +181,7 @@ if df is not None:
             dimensions=selected_num_col,
             title="",
             height=600,
-            width=800
+            width=600
         )
         fig3.update_traces(diagonal_visible=False)
         st.plotly_chart(fig3, use_container_width=False)
@@ -196,8 +196,8 @@ if df is not None:
             zmin=-1, zmax=1,
             labels=dict(color="Correlation"),
             aspect="auto",
-            width=700,
-            height=600
+            width=600,
+            height=500
         )
         fig4.update_traces(textfont=dict(size=16))
         st.plotly_chart(fig4, use_container_width=False)
@@ -229,8 +229,8 @@ if df is not None:
             x=cat_var1,
             y=num_var1,
             color=color_arg,
-            width=1000,
-            height=700
+            width=700,
+            height=500
         )
         st.plotly_chart(fig5, use_container_width=False)
 
@@ -248,8 +248,8 @@ if df is not None:
             color=color_arg,
             box=True,
             points="all",
-            width=1000,
-            height=700
+            width=700,
+            height=500
         )
         st.plotly_chart(fig5, use_container_width=False)
 
@@ -266,8 +266,8 @@ if df is not None:
             y=num_var2,
             color=color_arg,
             stripmode='overlay',
-            width=800,
-            height=700
+            width=700,
+            height=500
         )
         st.plotly_chart(fig5, use_container_width=False)
 
@@ -286,8 +286,8 @@ if df is not None:
             y=num_var2,
             z=num_var3,
             color=color_arg,
-            width=900,
-            height=800
+            width=700,
+            height=500
         )
         st.plotly_chart(fig5, use_container_width=False)
 

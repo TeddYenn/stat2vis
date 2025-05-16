@@ -70,7 +70,7 @@ if st.session_state.upload_data:
 
 # Load demo or uploaded data
 if st.session_state.use_demo_data:
-    df = pd.read_excel('eda_demo.xlsx', sheet_name=0)
+    df = pd.read_csv('demo_data.csv')
 elif uploaded_file is not None:
     if uploaded_file.type == 'text/csv':
         df = pd.read_csv(uploaded_file)
