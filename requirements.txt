@@ -6,4 +6,3 @@ matplotlib
 scipy
 openpyxl
 seaborn
-time
