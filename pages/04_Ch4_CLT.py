@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import norm
+from scipy.stats import norm, t
 import time
 
 # --- Set up the Streamlit page layout and metadata ---
